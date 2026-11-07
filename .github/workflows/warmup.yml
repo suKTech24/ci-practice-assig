@@ -1,0 +1,33 @@
+name: CI Pipeline Warmup
+on:
+  push:
+    branches: [main]
+jobs:
+  warmup_ci_broken:
+    name: Test on ${{ matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2010, ubuntu-14.04]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+       # Checkout action: https://github.com/marketplace/actions/checkout
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Print Hello
+        run: echo "Hello from test job on ${{ matrix.os }}"
+      - name: Run tests
+        run: npm test
+      - name: Print run info
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_ACTOR: ${{ github.actor }}
+        run: |
+          echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
+          echo "GITHUB_SHA: $GITHUB_SHA"
+          echo "GITHUB_ACTOR: $GITHUB_ACTOR"
+      
