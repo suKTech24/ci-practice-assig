@@ -1,0 +1,10 @@
+{
+  "name": "ci-pipeline-assignment",
+  "version": "1.0.0",
+  "description": "Text stats CLI used to practise GitHub Actions CI",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node --test test/textStats.test.js && echo 'All tests passed successfully!'"
+  }
+}
