@@ -1,0 +1,27 @@
+name: CI Pipeline Practice
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      # TASK 1 : Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      # TASK 2 : Cache npm's download cache (~/.npm), not node_modules
+      # Cache action: https://github.com/marketplace/actions/cache
+      - name: Cache npm downloads
+        uses: actions/cache@v6
+        with:
+          # npm's global download cache on Linux/macOS runners
+          path: ~/.npm
+          # Exact key: OS + fingerprint of package.json.
+          # Editing dependencies in package.json changes the hash -> new cache.
+          key: ${{ runner.os }}-npm-${{ hashFiles('package.json') }}
+          # Fallback: if no exact match, reuse the newest cache for this OS.
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
