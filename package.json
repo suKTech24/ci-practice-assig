@@ -1,10 +1,13 @@
 {
   "name": "ci-pipeline-assignment",
   "version": "1.0.0",
-  "description": "Text stats CLI used to practise GitHub Actions CI",
+  "description": "Tiny command-line detection engine mapped to MITRE ATT&CK, used to practise GitHub Actions CI",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "node --test test/textStats.test.js && echo 'All tests passed successfully!'"
+    "test": "node --test test/detector.test.js && echo 'All tests passed successfully!'"
+  },
+  "devDependencies": {
+    "eslint": "^10.14.0"
   }
 }

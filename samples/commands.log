@@ -1,0 +1,8 @@
+# Sample process command lines, one per line.
+# Run: node index.js samples/commands.log
+notepad.exe notes.txt
+ipconfig /all
+whoami /all
+net use Z: \\fileserver\share
+systeminfo
+net user

@@ -25,3 +25,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-npm-
 
+      # TASK 3 : Install, run tests, and save the output to a file
+      - name: Install & Test
+        run: npm install && npm test > test-output.txt
+
+      # TASK 3 : Upload the test output so it can be downloaded later
+      # Upload artifact action: https://github.com/marketplace/actions/upload-a-build-artifact
+      - name: Upload test results
+        if: always()  # upload even when tests fail, so you can read why
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results
+          path: test-output.txt
+

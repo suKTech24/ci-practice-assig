@@ -1,16 +1,16 @@
-// Text stats: print line, word, and character counts for a file,
-// plus its most common words.
+// Command-line detector: scan a log of process command lines and print
+// which MITRE ATT&CK techniques they match.
 //
-// Usage: node index.js <file> [topN]
-// Example: node index.js README.md 5
+// Usage:   node index.js <logfile>
+// Example: node index.js samples/commands.log
 
 const fs = require("node:fs");
-const { analyze } = require("./src/textStats");
+const { scanLines, countByTechnique } = require("./src/detector");
 
-const [file, topArg] = process.argv.slice(2);
+const file = process.argv[2];
 
 if (!file) {
-  console.error("Usage: node index.js <file> [topN]");
+  console.error("Usage: node index.js <logfile>");
   process.exit(1);
 }
 
@@ -22,14 +22,13 @@ try {
   process.exit(1);
 }
 
-const limit = Number.parseInt(topArg ?? "3", 10);
-const stats = analyze(text, Number.isNaN(limit) ? 3 : limit);
+const matches = scanLines(text);
 
-console.log(`File:       ${file}`);
-console.log(`Lines:      ${stats.lines}`);
-console.log(`Words:      ${stats.words}`);
-console.log(`Characters: ${stats.characters}`);
-console.log("Top words:");
-for (const { word, count } of stats.topWords) {
-  console.log(`  ${word.padEnd(15)} ${count}`);
+for (const m of matches) {
+  console.log(`line ${m.line}  ${m.technique.padEnd(10)} ${m.name}: ${m.command}`);
+}
+
+console.log(`\nMatches: ${matches.length}`);
+for (const [technique, count] of Object.entries(countByTechnique(matches))) {
+  console.log(`  ${technique.padEnd(10)} ${count}`);
 }
