@@ -7,6 +7,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      issues: write
     steps:
       # TASK 1 : Checkout repository
       - name: Checkout repository
@@ -38,3 +41,19 @@ jobs:
           name: test-results
           path: test-output.txt
 
+      # TASK 4 : Open a GitHub Issue when an earlier step fails.
+      # Keep this as the LAST step so it sees failures from every step above.
+      # github-script action: https://github.com/marketplace/actions/github-script
+      - name: Create issue on failure
+        if: failure()
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const branch = context.ref.replace('refs/heads/', '');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Workflow failed on ${branch}`,
+              body: `The workflow **${context.workflow}** failed.\n\n- **Commit:** ${context.sha}\n- **Branch:** ${branch}\n- **Run:** [View logs](${runUrl})`
+            });
